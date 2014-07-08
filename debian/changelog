@@ -1,4 +1,10 @@
-lastradio (0.6-1) trusty; urgency=low
+lastradio (0.7-1) trusty; urgency=low
+
+  * added station name to window title
+
+ -- Martin Borho <martin@borho.net>  Thu, 03 Jul 2014 00:00:00 +0000
+
+lastradio (0.6-3) trusty; urgency=low
 
   * fixed lock when not tracks were found on last.fm
   * added lockup for trackinfo from last.fm

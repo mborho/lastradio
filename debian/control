@@ -16,7 +16,7 @@ Architecture: amd64
 Section: misc
 Depends: golang-go,
          qtdeclarative5-qtquick2-plugin,
-         qtdeclarative5-window-plugin
+         qtdeclarative5-window-plugin,
          qtdeclarative5-localstorage-plugin,
          qtdeclarative5-controls-plugin,
          libportaudio2

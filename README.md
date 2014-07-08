@@ -13,7 +13,7 @@ LastRadio is available for Ubuntu 14.04 LTS x86_64.
 
 sudo add-apt-repository ppa:martin-borho/lastradio
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get install lastradio
 ```
 
 ## Build
