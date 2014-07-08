@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=0.5
+Name=LastRadio
+Comment=Simple Last.fm radio player using Spotify as music source
+Exec=/usr/bin/lastradio
+Icon=lastradio
+Terminal=false
+Type=Application
+Categories=Music;Application;

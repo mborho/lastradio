@@ -1,0 +1,45 @@
+lastradio (0.6-1) trusty; urgency=low
+
+  * fixed lock when not tracks were found on last.fm
+  * added lockup for trackinfo from last.fm
+  * handling love state of track
+  * more fixes
+
+ -- Martin Borho <martin@borho.net>  Wed, 02 Jul 2014 00:00:00 +0000
+
+lastradio (0.5-0) trusty; urgency=low
+
+  * added icon and .desktop file
+
+ -- Martin Borho <martin@borho.net>  Tue, 01 Jul 2014 00:00:00 +0000
+
+lastradio (0.4-0) trusty; urgency=low
+
+  * prefetching tracks in playqueue
+
+ -- Martin Borho <martin@borho.net>  Tue, 01 Jul 2014 00:00:00 +0000
+
+lastradio (0.3-4) trusty; urgency=low
+
+  * debian build rules
+
+ -- Martin Borho <martin@borho.net>  Mon, 30 Jun 2014 00:00:00 +0000
+
+lastradio (0.2-6) trusty; urgency=low
+
+  * Added option to reset accounts credentials
+  * fixed crashed at empty radios
+
+ -- Martin Borho <martin@borho.net>  Fri, 27 Jun 2014 00:00:00 +0000
+
+lastradio (0.1-1) trusty; urgency=low
+
+  * Modified debian/rules for libspotify 
+
+ -- Martin Borho <martin@borho.net>  Thu, 26 Jun 2014 00:00:00 +0000
+
+lastradio (0.1-0) trusty; urgency=low
+
+  * Intial build.
+
+ -- Martin Borho <martin@borho.net>  Sun, 22 Jun 2014 00:00:00 +0000

@@ -1,0 +1,52 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+export GOPATH=$(CURDIR)
+
+PKGDIR=debian/lastradio
+LIBSPOT=libspotify-12.1.51-Linux-x86_64-release.tar.gz
+SPOTDIR=$(GOPATH)/libspotify-12.1.51-Linux-x86_64-release
+ICON=lastradio.png
+
+%:
+	dh $@ 
+
+clean:
+	dh_clean
+	rm -rf $(GOPATH)/bin/* $(GOPATH)/pkg/*
+	rm -f $(GOPATH)/goinstall.log
+	rm -rf $(SPOTDIR)
+
+binary-arch: clean
+	dh_prep
+	dh_installdirs
+	grep -rnl '"share/' src | xargs --no-run-if-empty sed -i "s/share\//\/usr\/share\//g" || ""
+	tar xvfz $(GOPATH)/$(LIBSPOT)
+	sed -i "s@^prefix=.*$X@prefix=$(SPOTDIR)@g" $(SPOTDIR)/lib/pkgconfig/libspotify.pc
+	PKG_CONFIG_PATH=$(SPOTDIR)/lib/pkgconfig/ go get github.com/op/go-libspotify/spotify
+	go get code.google.com/p/portaudio-go/portaudio github.com/shkh/lastfm-go/lastfm gopkg.in/qml.v0
+	cd $(GOPATH)/src && go build -o ../bin/lastradio lastradio/main.go
+	mkdir -p $(PKGDIR)/usr/bin
+	cp $(GOPATH)/bin/* $(PKGDIR)/usr/bin/
+	mkdir -p $(PKGDIR)/usr/share/lastradio/
+	cp -R $(GOPATH)/share/lastradio/* $(PKGDIR)/usr/share/lastradio/
+	mkdir -p $(PKGDIR)/usr/lib/x86_64-linux-gnu/lastradio/
+	cp -R $(SPOTDIR)/lib/libspotify* $(PKGDIR)/usr/lib/x86_64-linux-gnu/lastradio/
+	mkdir -p $(PKGDIR)/etc/ld.so.conf.d/
+	echo "/usr/lib/x86_64-linux-gnu/lastradio" > $(PKGDIR)/etc/ld.so.conf.d/lastradio.so.conf
+	mkdir -p $(PKGDIR)/usr/share/pixmaps/
+	cp $(GOPATH)/$(ICON) $(PKGDIR)/usr/share/pixmaps/$(ICON)
+	mkdir -p $(PKGDIR)/usr/share/applications/
+	cp $(GOPATH)/lastradio.desktop $(PKGDIR)/usr/share/applications/
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-arch
