@@ -34,7 +34,7 @@ Install missing dependency:
 
 ```
 #!bash
-sudo apt install mercurial g++ golang-go portaudio19-dev \
+sudo apt install git mercurial g++ golang-go portaudio19-dev \
      qtbase5-private-dev qtdeclarative5-private-dev \
      libqt5opengl5-dev qtdeclarative5-qtquick2-plugin \
      qtdeclarative5-window-plugin qtdeclarative5-localstorage-plugin \
