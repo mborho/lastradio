@@ -1,3 +1,9 @@
+lastradio (0.8-0) trusty; urgency=low
+
+  * disabled ban/unban
+
+ -- Martin Borho <martin@borho.net>  Sat, 12 Jul 2014 00:00:00 +0000
+
 lastradio (0.7-1) trusty; urgency=low
 
   * added station name to window title

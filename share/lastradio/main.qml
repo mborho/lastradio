@@ -568,7 +568,7 @@ ApplicationWindow {
                         }
                     }
                 }
-                Image {
+                /*Image {
                     id: banButton
                     source: "png/dislike.png"
                     width: 20
@@ -585,7 +585,7 @@ ApplicationWindow {
                             playerView.skipTrack()
                         }
                     }
-                }
+                }*/
                 Image {
                     id: radioButton
                     source: "png/radio.png"

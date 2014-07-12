@@ -30,6 +30,17 @@ LastRadio is developed by using the [UbuntuSDK](http://developer.ubuntu.com/apps
 
 #### From source ####
 
+Install missing dependency:
+
+```
+#!bash
+sudo apt install mercurial g++ golang-go portaudio19-dev \
+     qtbase5-private-dev qtdeclarative5-private-dev \
+     libqt5opengl5-dev qtdeclarative5-qtquick2-plugin \
+     qtdeclarative5-window-plugin qtdeclarative5-localstorage-plugin \
+     qtdeclarative5-controls-plugin
+```
+
 Download and install [Libspotify](https://developer.spotify.com/technologies/libspotify/):
 
 ```
@@ -40,17 +51,6 @@ tar xvfz libspotify-12.1.51-Linux-x86_64-release.tar.gz
 cd libspotify-12.1.51-Linux-x86_64-release
 # install system wide
 sudo make install prefix=/usr/local
-```
-
-Install missing dependency:
-
-```
-#!bash
-sudo apt install mercurial g++ golang-go portaudio19-dev \
-     qtbase5-private-dev qtdeclarative5-private-dev \
-     libqt5opengl5-dev qtdeclarative5-qtquick2-plugin \
-     qtdeclarative5-window-plugin qtdeclarative5-localstorage-plugin \
-     qtdeclarative5-controls-plugin
 ```
 
 checkout source and build:
