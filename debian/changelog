@@ -1,3 +1,11 @@
+lastradio (0.9-0) trusty; urgency=low
+
+  * improved spotify track resolving
+  * added dummy background images when no artwork was found 
+  * updated go-spotify, using provided endoftrack channel 
+
+ -- Martin Borho <martin@borho.net>  Sat, 09 Aug 2014 00:00:00 +0000
+
 lastradio (0.8-2) trusty; urgency=low
 
   * disabled ban/unban
