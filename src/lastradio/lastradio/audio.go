@@ -7,11 +7,11 @@ import (
 	spotify "github.com/op/go-libspotify/spotify"
 )
 
-func initializeAudioConsumer(session *spotify.Session, control chan string) bool {
+func initializeAudioConsumer(session *spotify.Session) bool {
 	// setup audio consumer
 	portaudio.Initialize()
 	pa := newPortAudio()
-	go pa.Player(control)
+	go pa.Player()
 	session.SetAudioConsumer(pa)
 	return true
 }
@@ -77,7 +77,7 @@ func (pa *portAudio) WriteAudio(format spotify.AudioFormat, frames []byte) int {
 	}
 }
 
-func (pa *portAudio) Player(control chan string) {
+func (pa *portAudio) Player() {
 	log.Print("PORTADIO PLAYER")
 	out := make([]int16, 2048*2)
 
@@ -98,17 +98,9 @@ func (pa *portAudio) Player(control chan string) {
 
 	// Decode the incoming data which is expected to be 2 channels and
 	// delivered as int16 in []byte, hence we need to convert it.
-	waiting := true
 	for audio := range pa.buffer {
 		if len(audio.frames) != 2048*2*2 {
-			// most probably end of song
-			if waiting != true {
-				control <- "next"
-			}
-			waiting = true
 			continue
-		} else {
-			waiting = false
 		}
 		j := 0
 		for i := 0; i < len(audio.frames); i += 2 {

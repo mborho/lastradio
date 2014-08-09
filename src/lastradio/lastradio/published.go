@@ -93,7 +93,7 @@ func (p *Player) LoadRadio(name string) error {
 	p.spotifyQueue = make(chan *LastFmTrack, 3)
 	p.playQueue = make(chan *LastFmTrack, 3)
 	p.lastfmTracks = make(chan *LastFmTrack, 3)
-	_ = initializeAudioConsumer(p.Spotify, p.control)
+	_ = initializeAudioConsumer(p.Spotify)
 	go getTrackInfo(p.Lastfm, p.LastFmUser.Username, p.lastfmTracks, p.spotifyQueue)
 	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, p.control)
 	go p.Controller()
@@ -140,16 +140,23 @@ func (p *Player) setRadio(mode string) error {
 }
 
 func (p *Player) Controller() {
+	endOfTrack := p.Spotify.EndOfTrackUpdates()
 	for {
 		select {
 		case command := <-p.control:
 			if command == "next" {
-				track := <-p.playQueue
-				p.Public.SetData(track)
-				go playSpotifyTrack(p.Spotify, track.SpotifyLink)
+				p.startNextTrack()
 			}
+		case <-endOfTrack:
+			p.startNextTrack()
 		}
 	}
+}
+
+func (p *Player) startNextTrack() {
+	track := <-p.playQueue
+	p.Public.SetData(track)
+	go playSpotifyTrack(p.Spotify, track.SpotifyLink)
 }
 
 func (p *Player) Pause() {
