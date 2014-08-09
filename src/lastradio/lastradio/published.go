@@ -214,6 +214,8 @@ func (p *PublishedData) SetData(track *LastFmTrack) {
 		p.Image = track.Image
 	} else if track.Artist.Image != "" {
 		p.Image = track.Artist.Image
+	} else {
+		p.Image = "png/dummy.png"
 	}
 	// set times when to scrobble etc
 	p.Duration = track.Duration.Seconds()
