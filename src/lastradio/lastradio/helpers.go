@@ -2,6 +2,8 @@ package lastradio
 
 import (
 	"math/rand"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -22,4 +24,16 @@ func getRandomTrack(tracks []*LastFmTrack) (*LastFmTrack, []*LastFmTrack) {
 	next := tracks[randIndex]
 	tracks = append(tracks[0:randIndex], tracks[randIndex+1:]...)
 	return next, tracks
+}
+
+func prepareSpotifyTerm(term string) string {
+	// remove brackets
+	re := regexp.MustCompile("\\([^\\)]*\\)")
+	term = re.ReplaceAllString(term, "")
+	// remove possible line numbers
+	re = regexp.MustCompile(" '?[0-9]+ ")
+	term = re.ReplaceAllString(term, " ")
+	// remove whitespace at end or beginning
+	term = strings.TrimSpace(term)
+	return term
 }

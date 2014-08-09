@@ -69,9 +69,12 @@ func getTrackInfo(api *lastfm.Api, username string, trackList chan *LastFmTrack,
 func getSpotifyData(session *spotify.Session, tracklist, playlist chan *LastFmTrack, control chan string) error {
 	log.Print("getSpotifyData")
 	for track := range tracklist {
-		log.Print("Received: ", track.Artist, track.Name)
-		query := track.Artist.Name + " " + track.Name
-
+		term := track.Artist.Name + " " + track.Name
+		log.Print("Received: ", term)
+		query := prepareSpotifyTerm(term)
+		if term != query {
+			log.Print("  Prepared: " + query)
+		}
 		spec := spotify.SearchSpec{0, 1}
 		var sOpts = &spotify.SearchOptions{
 			Tracks: spec,
