@@ -5,12 +5,19 @@ import (
 	"os"
 	"os/signal"
 
-	"gopkg.in/qml.v0"
+	"gopkg.in/qml.v1"
 
 	"lastradio/lastradio"
 )
 
 func main() {
+	if err := qml.Run(run); err != nil {
+		log.Print(err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 
 	defer lastradio.Close()
 
@@ -18,12 +25,11 @@ func main() {
 	exit := make(chan bool)
 	go handleSignals(exit)
 
-	qml.Init(nil)
 	engine := qml.NewEngine()
 
 	component, err := engine.LoadFile("share/lastradio/main.qml")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	currentTrack := &lastradio.PublishedData{}
@@ -39,6 +45,7 @@ func main() {
 
 	window.Show()
 	window.Wait()
+	return nil
 }
 
 func handleSignals(exit chan bool) {

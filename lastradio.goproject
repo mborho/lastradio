@@ -23,10 +23,10 @@ GoProject {
         }
     }
     Package {
-        //name: "gopkg.in/qml.v0"
+        name: "gopkg.in/qml.v1"
         //name: "code.google.com/p/portaudio-go/portaudio"
         //name: "github.com/op/go-libspotify/spotify"
-        name: "github.com/shkh/lastfm-go/lastfm"
+        //name: "github.com/shkh/lastfm-go/lastfm"
         Files {
             filter: "*.*"
         }    

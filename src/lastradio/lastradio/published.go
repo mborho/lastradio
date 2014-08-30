@@ -5,7 +5,7 @@ import (
 
 	spotify "github.com/op/go-libspotify/spotify"
 	"github.com/shkh/lastfm-go/lastfm"
-	"gopkg.in/qml.v0"
+        "gopkg.in/qml.v1"
 )
 
 type Player struct {
