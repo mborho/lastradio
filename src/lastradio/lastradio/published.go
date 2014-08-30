@@ -5,7 +5,7 @@ import (
 
 	spotify "github.com/op/go-libspotify/spotify"
 	"github.com/shkh/lastfm-go/lastfm"
-        "gopkg.in/qml.v1"
+	"gopkg.in/qml.v1"
 )
 
 type Player struct {
@@ -88,7 +88,7 @@ func (p *Player) Logout() {
 	p.checkLoggedIn()
 }
 
-func (p *Player) LoadRadio(name string) error {
+func (p *Player) LoadRadio(name string, username string) error {
 	p.control = make(chan string)
 	p.spotifyQueue = make(chan *LastFmTrack, 3)
 	p.playQueue = make(chan *LastFmTrack, 3)
@@ -97,14 +97,17 @@ func (p *Player) LoadRadio(name string) error {
 	go getTrackInfo(p.Lastfm, p.LastFmUser.Username, p.lastfmTracks, p.spotifyQueue)
 	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, p.control)
 	go p.Controller()
-	err := p.setRadio(name)
+	err := p.setRadio(name, username)
 	if err != nil {
 		log.Print(err)
 	}
 	return err
 }
 
-func (p *Player) setRadio(mode string) error {
+func (p *Player) setRadio(mode string, username string) error {
+	if username == "" {
+		username = p.LastFmUser.Username
+	}
 	switch mode {
 	case "recommended":
 		p.Radio = &RecommendedRadio{
@@ -115,24 +118,27 @@ func (p *Player) setRadio(mode string) error {
 		}
 	case "top":
 		p.Radio = &TopTracksRadio{
-			spotify:      p.Spotify,
-			lastfm:       p.Lastfm,
-			lastfmTracks: p.lastfmTracks,
-			lastFmUser:   p.LastFmUser,
+			spotify:         p.Spotify,
+			lastfm:          p.Lastfm,
+			lastfmTracks:    p.lastfmTracks,
+			lastFmUser:      p.LastFmUser,
+			currentUsername: username,
 		}
 	case "topartists":
 		p.Radio = &TopArtistsRadio{
-			spotify:      p.Spotify,
-			lastfm:       p.Lastfm,
-			lastfmTracks: p.lastfmTracks,
-			lastFmUser:   p.LastFmUser,
+			spotify:         p.Spotify,
+			lastfm:          p.Lastfm,
+			lastfmTracks:    p.lastfmTracks,
+			lastFmUser:      p.LastFmUser,
+			currentUsername: username,
 		}
 	case "loved":
 		p.Radio = &LovedTracksRadio{
-			spotify:      p.Spotify,
-			lastfm:       p.Lastfm,
-			lastfmTracks: p.lastfmTracks,
-			lastFmUser:   p.LastFmUser,
+			spotify:         p.Spotify,
+			lastfm:          p.Lastfm,
+			lastfmTracks:    p.lastfmTracks,
+			lastFmUser:      p.LastFmUser,
+			currentUsername: username,
 		}
 	}
 	err := p.Radio.Load()

@@ -67,13 +67,14 @@ func (radio *RecommendedRadio) Run() {
 }
 
 type TopArtistsRadio struct {
-	spotify      *spotify.Session
-	lastfm       *lastfm.Api
-	artists      []*LastFmArtist
-	artistslist  chan *LastFmArtist
-	lastfmTracks chan *LastFmTrack
-	lastFmUser   *LastFmUser
-	page         int
+	spotify         *spotify.Session
+	lastfm          *lastfm.Api
+	artists         []*LastFmArtist
+	artistslist     chan *LastFmArtist
+	lastfmTracks    chan *LastFmTrack
+	lastFmUser      *LastFmUser
+	page            int
+	currentUsername string
 }
 
 func (radio *TopArtistsRadio) Load() error {
@@ -88,7 +89,7 @@ func (radio *TopArtistsRadio) Load() error {
 
 func (radio *TopArtistsRadio) loadArtists() error {
 	radio.page = radio.page + 1
-	var params = lastfm.P{"user": radio.lastFmUser.GetUsername(), "limit": 50, "page": radio.page}
+	var params = lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.User.GetTopArtists(params)
 	if err == nil {
 		if artists.Total < 1 {
@@ -119,12 +120,13 @@ func (radio *TopArtistsRadio) Run() {
 }
 
 type TopTracksRadio struct {
-	spotify      *spotify.Session
-	lastfm       *lastfm.Api
-	tracks       []*LastFmTrack
-	lastfmTracks chan *LastFmTrack
-	lastFmUser   *LastFmUser
-	page         int
+	spotify         *spotify.Session
+	lastfm          *lastfm.Api
+	tracks          []*LastFmTrack
+	lastfmTracks    chan *LastFmTrack
+	lastFmUser      *LastFmUser
+	page            int
+	currentUsername string
 }
 
 func (radio *TopTracksRadio) Load() error {
@@ -137,7 +139,7 @@ func (radio *TopTracksRadio) Load() error {
 
 func (radio *TopTracksRadio) loadTopTracks() error {
 	radio.page = radio.page + 1
-	params := lastfm.P{"user": radio.lastFmUser.GetUsername(), "limit": 50, "page": radio.page}
+	params := lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	tracks, err := radio.lastfm.User.GetTopTracks(params)
 	if err == nil {
 		if tracks.Total < 1 {
@@ -171,12 +173,13 @@ func (radio *TopTracksRadio) Run() {
 }
 
 type LovedTracksRadio struct {
-	spotify      *spotify.Session
-	lastfm       *lastfm.Api
-	tracks       []*LastFmTrack
-	lastfmTracks chan *LastFmTrack
-	page         int
-	lastFmUser   *LastFmUser
+	spotify         *spotify.Session
+	lastfm          *lastfm.Api
+	tracks          []*LastFmTrack
+	lastfmTracks    chan *LastFmTrack
+	page            int
+	lastFmUser      *LastFmUser
+	currentUsername string
 }
 
 func (radio *LovedTracksRadio) Load() error {
@@ -189,7 +192,7 @@ func (radio *LovedTracksRadio) Load() error {
 
 func (radio *LovedTracksRadio) loadLovedTracks() error {
 	radio.page = radio.page + 1
-	params := lastfm.P{"user": radio.lastFmUser.GetUsername(), "limit": 50, "page": radio.page}
+	params := lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	tracks, err := radio.lastfm.User.GetLovedTracks(params)
 	if err == nil {
 		if tracks.Total < 1 {
