@@ -27,7 +27,7 @@ binary-arch: clean
 	tar xvfz $(GOPATH)/$(LIBSPOT)
 	sed -i "s@^prefix=.*$X@prefix=$(SPOTDIR)@g" $(SPOTDIR)/lib/pkgconfig/libspotify.pc
 	PKG_CONFIG_PATH=$(SPOTDIR)/lib/pkgconfig/ go get github.com/op/go-libspotify/spotify
-	go get code.google.com/p/portaudio-go/portaudio github.com/shkh/lastfm-go/lastfm gopkg.in/qml.v0
+	go get code.google.com/p/portaudio-go/portaudio github.com/shkh/lastfm-go/lastfm gopkg.in/qml.v1
 	cd $(GOPATH)/src && go build -o ../bin/lastradio lastradio/main.go
 	mkdir -p $(PKGDIR)/usr/bin
 	cp $(GOPATH)/bin/* $(PKGDIR)/usr/bin/
