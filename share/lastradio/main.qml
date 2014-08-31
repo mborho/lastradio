@@ -394,10 +394,14 @@ ApplicationWindow {
                     right: parent.right
                 }
                 Text {
+                    width: parent.width
                     text: track.name
                     font.pointSize: 17
                     color: "#FFF"
                     font.bold: true
+                    wrapMode: Text.WordWrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 2
                     onTextChanged: {
                         trackProgress.value = 0
                         if (track.duration > 0) {
@@ -420,7 +424,11 @@ ApplicationWindow {
                     right: parent.right
                 }
                 Text {
+                    width: parent.width
                     text: track.album
+                    wrapMode: Text.WordWrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 2
                     font.pointSize: 14
                     color: "#FFF"
                 }
@@ -462,7 +470,11 @@ ApplicationWindow {
                     right: parent.right
                 }
                 Text {
+                    width: parent.width
                     text: track.artist
+                    wrapMode: Text.WordWrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 2
                     font.pointSize: 17
                     color: "#FFF"
                     font.bold: true
