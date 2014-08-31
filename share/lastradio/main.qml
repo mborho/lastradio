@@ -281,7 +281,7 @@ ApplicationWindow {
                     font.pointSize: 17
                     //color: "#FFF"
                 }
-                Rectangle {
+                /*Rectangle {
                     id: userChoice
                     height: childrenRect.height
                     color: "transparent"
@@ -322,7 +322,7 @@ ApplicationWindow {
                             }
                         }
                     }
-                }
+                }*/
             }
 
             delegate: Item {
