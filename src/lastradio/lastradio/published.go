@@ -147,14 +147,23 @@ func (p *Player) setRadio(mode string, username string) error {
 
 func (p *Player) Controller() {
 	endOfTrack := p.Spotify.EndOfTrackUpdates()
+	streamingErrors := p.Spotify.StreamingErrors()
+	logMessages := p.Spotify.LogMessages()
 	for {
 		select {
 		case command := <-p.control:
+			log.Print("CONTROL: ", command)
 			if command == "next" {
 				p.startNextTrack()
 			}
 		case <-endOfTrack:
+			log.Print("SIGNAL: endOfTrack")
 			p.startNextTrack()
+		case err := <-streamingErrors:
+			log.Print("SIGNAL: streaming error")
+			log.Print(err)
+		case msg := <-logMessages:
+			log.Print("LOG MESSAGE: ", msg)
 		}
 	}
 }
@@ -162,6 +171,7 @@ func (p *Player) Controller() {
 func (p *Player) startNextTrack() {
 	track := <-p.playQueue
 	p.Public.SetData(track)
+	log.Print("Starting Track: ", track.Artist.Name, track.Name)
 	go playSpotifyTrack(p.Spotify, track.SpotifyLink)
 }
 
