@@ -31,5 +31,26 @@ GoProject {
             filter: "*.*"
         }    
     }
+    Package {
+        name: "code.google.com/p/portaudio-go/portaudio"
+        //name: "github.com/op/go-libspotify/spotify"
+        //name: "github.com/shkh/lastfm-go/lastfm"
+        Files {
+            filter: "*.*"
+        }
+    }
+    Package {
+        name: "github.com/op/go-libspotify/spotify"
+        //name: "github.com/shkh/lastfm-go/lastfm"
+        Files {
+            filter: "*.*"
+        }
+    }
+    Package {
+        name: "github.com/shkh/lastfm-go/lastfm"
+        Files {
+            filter: "*.*"
+        }
+    }
 }
 
