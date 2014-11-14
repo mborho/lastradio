@@ -93,7 +93,7 @@ func (p *Player) LoadRadio(name string, username string) error {
 	p.spotifyQueue = make(chan *LastFmTrack, 3)
 	p.playQueue = make(chan *LastFmTrack, 3)
 	p.lastfmTracks = make(chan *LastFmTrack, 3)
-	_ = initializeAudioConsumer(p.Spotify)
+
 	go getTrackInfo(p.Lastfm, p.LastFmUser.Username, p.lastfmTracks, p.spotifyQueue)
 	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, p.control)
 	go p.Controller()

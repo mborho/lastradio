@@ -57,11 +57,17 @@ func getSpotifySession(spotifyUser *SpotifyUser) (*spotify.Session, error) {
 	}
 	log.Printf("libspotify %s", spotify.BuildId())
 
+	audio, err := newAudioWriter()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	session, err := spotify.NewSession(&spotify.Config{
 		ApplicationKey:   appKey,
 		ApplicationName:  "test",
 		CacheLocation:    LOCAL_APP_DIR,
 		SettingsLocation: LOCAL_APP_DIR,
+		AudioConsumer:    audio,
 
 		// Disable playlists to make playback faster
 		DisablePlaylistMetadataCache: true,
@@ -93,14 +99,14 @@ func loginToSpotifySession(session *spotify.Session, spotifyUser *SpotifyUser) e
 	}
 
 	// Wait for login and expect it to go fine
-	select {
-	case err = <-session.LoginUpdates():
+	if err = <-session.LoggedInUpdates(); err != nil {
 		if err != nil {
 			log.Print(err)
 			return err
 		}
 		return nil
 	}
+	return nil
 }
 
 func HandleSpotifySession(session *spotify.Session, exit <-chan bool) {
@@ -109,7 +115,7 @@ func HandleSpotifySession(session *spotify.Session, exit <-chan bool) {
 	log.Print("TODO: spotify signal handling")
 	for running {
 		select {
-		case <-session.LogoutUpdates():
+		case <-session.LoggedOutUpdates():
 			running = false
 		case <-exit:
 			if exitAttempts >= 3 {
