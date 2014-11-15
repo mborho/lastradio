@@ -2,6 +2,7 @@ package lastradio
 
 import (
 	"log"
+	"time"
 
 	spotify "github.com/op/go-libspotify/spotify"
 	"github.com/shkh/lastfm-go/lastfm"
@@ -146,6 +147,7 @@ func (p *Player) setRadio(mode string, username string) error {
 }
 
 func (p *Player) Controller() {
+	endTrackTime := time.Now()
 	endOfTrack := p.Spotify.EndOfTrackUpdates()
 	streamingErrors := p.Spotify.StreamingErrors()
         //logMessages := p.Spotify.LogMessages()
@@ -158,7 +160,14 @@ func (p *Player) Controller() {
 			}
 		case <-endOfTrack:
 			log.Print("SIGNAL: endOfTrack")
-			p.startNextTrack()
+			duration := time.Since(endTrackTime)
+			if duration.Seconds() > 5 {
+				// handle multiple endOfTrack signals with a threshold of 5 secs
+				p.startNextTrack()
+			} else {
+				log.Print("EndOfTrack threshold not reached")
+			}
+			endTrackTime = time.Now()
 		case err := <-streamingErrors:
 			log.Print("SIGNAL: streaming error")
 			log.Print(err)
