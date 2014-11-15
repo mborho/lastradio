@@ -148,7 +148,7 @@ func (p *Player) setRadio(mode string, username string) error {
 func (p *Player) Controller() {
 	endOfTrack := p.Spotify.EndOfTrackUpdates()
 	streamingErrors := p.Spotify.StreamingErrors()
-	logMessages := p.Spotify.LogMessages()
+        //logMessages := p.Spotify.LogMessages()
 	for {
 		select {
 		case command := <-p.control:
@@ -162,8 +162,8 @@ func (p *Player) Controller() {
 		case err := <-streamingErrors:
 			log.Print("SIGNAL: streaming error")
 			log.Print(err)
-		case msg := <-logMessages:
-			log.Print("LOG MESSAGE: ", msg)
+			/*case msg := <-logMessages:
+			  log.Print("LOG MESSAGE: ", msg)*/
 		}
 	}
 }
