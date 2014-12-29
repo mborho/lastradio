@@ -64,7 +64,7 @@ ApplicationWindow {
     }
 
     toolBar: ToolBar {
-        visible: startView.visible
+        visible: startView.Stack.status === Stack.Active
         RowLayout {
             ToolButton {
                 visible: started
@@ -105,4 +105,5 @@ ApplicationWindow {
         id: stack
         initialItem: loginView
     }
+
 }

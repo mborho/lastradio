@@ -17,8 +17,6 @@ Rectangle {
     onStop: {
         player.stop()
         stack.pop()
-        //playerView.visible = false
-        //startView.visible = true
     }
 
     Rectangle {
