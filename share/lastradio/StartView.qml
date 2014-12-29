@@ -1,4 +1,7 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.2
+import QtQuick.Layouts 1.1
+import QtQuick.Controls.Styles 1.2
 
 Rectangle {
     id: startView
@@ -41,9 +44,62 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: tools
+        height:40
+        color: "#F2F1F0"
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+
+        RowLayout {
+            anchors.verticalCenter: parent.verticalCenter
+            Button {
+                visible: started
+                text: "Back to radio"
+                onClicked: {
+                    stack.push(playerView)
+                }
+                /*style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 25
+                            border.width: control.activeFocus ? 2 : 1
+                            border.color: "#888"
+                            radius: 4
+                            gradient: Gradient {
+                                GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                                GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                            }
+                        }
+                    }*/
+            }
+            Button {
+                text: "Reset accounts"
+                onClicked: {
+                    clearSetting("lastfmUser");
+                    clearSetting("lastfmPwd");
+                    clearSetting("spotifyUser");
+                    clearSetting("spotifyPwd");
+                    started = false
+                    playerView.stop()
+                    player.logout()
+                    stack.push(loginView)
+                }
+            }
+        }
+    }
     ListView {
         id: radioListView
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: tools.bottom
+            bottom: parent.bottom
+        }
+
         anchors.margins: 40
         model: radioList
         property string username: ""

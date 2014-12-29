@@ -15,6 +15,9 @@ Rectangle {
         clickAnim2.target = button
         clickAnim.start()
     }
+    function enableLoveButton() {
+        loveButton.enabled = true;
+    }
     SequentialAnimation {
         id: clickAnim
         running: false

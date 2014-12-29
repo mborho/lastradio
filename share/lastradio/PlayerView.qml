@@ -54,7 +54,7 @@ Rectangle {
                     trackProgress.value = 0
                     if (track.duration > 0) {
                         progressTimer.running = true
-                        loveButton.enabled = true
+                        playerActions.enableLoveButton();
                     }
                 }
             }

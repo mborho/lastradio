@@ -1,8 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.1
+import QtQuick.Controls 1.2
 import QtQuick.LocalStorage 2.0
-import QtQuick.Controls.Styles 1.1
 
 ApplicationWindow {
     title: "LastRadio"+((radioName) ? " - "+radioName : "")+((currentUsername) ? " ("+currentUsername+")" : "")
@@ -61,32 +59,6 @@ ApplicationWindow {
         db.transaction(function(tx){
             tx.executeSql('DELETE FROM Settings WHERE key = ?', [name]);
         });
-    }
-
-    toolBar: ToolBar {
-        visible: startView.Stack.status === Stack.Active
-        RowLayout {
-            ToolButton {
-                visible: started
-                text: "Back to radio"
-                onClicked: {
-                    stack.push(playerView)
-                }
-            }
-            ToolButton {
-                text: "Reset accounts"
-                onClicked: {
-                    clearSetting("lastfmUser");
-                    clearSetting("lastfmPwd");
-                    clearSetting("spotifyUser");
-                    clearSetting("spotifyPwd");
-                    started = false
-                    playerView.stop()
-                    player.logout()
-                    stack.push(loginView)
-                }
-            }
-        }
     }
 
     LoginView {
