@@ -27,7 +27,7 @@ func run() error {
 
 	engine := qml.NewEngine()
 
-	component, err := engine.LoadFile("share/lastradio/main.qml")
+	component, err := engine.LoadFile("qrc:///share/lastradio/main.qml")
 	if err != nil {
 		return err
 	}
