@@ -24,30 +24,30 @@ GoProject {
     }
     Package {
         name: "gopkg.in/qml.v1"
-        //name: "code.google.com/p/portaudio-go/portaudio"
-        //name: "github.com/op/go-libspotify/spotify"
-        //name: "github.com/shkh/lastfm-go/lastfm"
         Files {
             filter: "*.*"
         }    
     }
     Package {
         name: "code.google.com/p/portaudio-go/portaudio"
-        //name: "github.com/op/go-libspotify/spotify"
-        //name: "github.com/shkh/lastfm-go/lastfm"
         Files {
             filter: "*.*"
         }
     }
     Package {
         name: "github.com/op/go-libspotify/spotify"
-        //name: "github.com/shkh/lastfm-go/lastfm"
         Files {
             filter: "*.*"
         }
     }
     Package {
         name: "github.com/shkh/lastfm-go/lastfm"
+        Files {
+            filter: "*.*"
+        }
+    }
+    Package {
+        name: "gopkg.in/qml.v1/cmd/genqrc"
         Files {
             filter: "*.*"
         }
