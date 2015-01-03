@@ -1,3 +1,9 @@
+lastradio (0.14-0-utopic) utopic; urgency=low
+
+  * added threshold for EndOfTrack signal
+
+ -- Martin Borho <martin@borho.net>  Fri, 14 Nov 2014 00:00:00 +0000
+
 lastradio (0.13-0-trusty) trusty; urgency=low
 
   * added more verbose debug output
