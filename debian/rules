@@ -32,7 +32,7 @@ binary-arch: clean
 	mkdir -p $(PKGDIR)/usr/bin
 	cp $(GOPATH)/bin/* $(PKGDIR)/usr/bin/
 	mkdir -p $(PKGDIR)/usr/share/lastradio/
-	cp -R $(GOPATH)/share/lastradio/* $(PKGDIR)/usr/share/lastradio/
+	cp -R $(GOPATH)/share/lastradio/spotify_appkey.key $(PKGDIR)/usr/share/lastradio/
 	mkdir -p $(PKGDIR)/usr/lib/x86_64-linux-gnu/lastradio/
 	cp -R $(SPOTDIR)/lib/libspotify* $(PKGDIR)/usr/lib/x86_64-linux-gnu/lastradio/
 	mkdir -p $(PKGDIR)/etc/ld.so.conf.d/

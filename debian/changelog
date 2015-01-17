@@ -1,4 +1,11 @@
-lastradio (0.14-0-utopic) utopic; urgency=low
+lastradio (0.15-0-utopic) utopic; urgency=low
+
+  * using qrc for builindg qml files into binary
+  * StackSheet and Views (QML)
+
+ -- Martin Borho <martin@borho.net>  Sat, 03 Jan 2015 00:00:00 +0000
+
+lastradio (0.14-0-trusty) trusty; urgency=low
 
   * added threshold for EndOfTrack signal
 
