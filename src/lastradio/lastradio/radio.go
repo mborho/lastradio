@@ -255,7 +255,7 @@ func (radio *SimilarRadio) Load() error {
 
 func (radio *SimilarRadio) loadSimilar() error {
 	radio.page = radio.page + 1
-	params := lastfm.P{"artist": radio.bandName, "limit": 50, "page": radio.page}
+        params := lastfm.P{"artist": radio.bandName, "autocorrect": 1, "limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.Artist.GetSimilar(params)
 	if err == nil {
 		if len(artists.Similars) < 1 {
