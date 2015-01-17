@@ -141,6 +141,14 @@ func (p *Player) setRadio(mode string, username string) error {
 			lastFmUser:      p.LastFmUser,
 			currentUsername: username,
 		}
+	case "similar":
+		p.Radio = &SimilarRadio{
+			spotify:      p.Spotify,
+			lastfm:       p.Lastfm,
+			lastfmTracks: p.lastfmTracks,
+			lastFmUser:   p.LastFmUser,
+			bandName:     username,
+		}
 	}
 	err := p.Radio.Load()
 	return err
@@ -150,7 +158,7 @@ func (p *Player) Controller() {
 	endTrackTime := time.Now()
 	endOfTrack := p.Spotify.EndOfTrackUpdates()
 	streamingErrors := p.Spotify.StreamingErrors()
-        //logMessages := p.Spotify.LogMessages()
+	//logMessages := p.Spotify.LogMessages()
 	for {
 		select {
 		case command := <-p.control:

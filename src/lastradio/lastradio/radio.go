@@ -231,3 +231,56 @@ func (radio *LovedTracksRadio) Run() {
 		}
 	}
 }
+
+type SimilarRadio struct {
+	spotify      *spotify.Session
+	lastfm       *lastfm.Api
+	artists      []*LastFmArtist
+	artistslist  chan *LastFmArtist
+	lastfmTracks chan *LastFmTrack
+	page         int
+	lastFmUser   *LastFmUser
+	bandName     string
+}
+
+func (radio *SimilarRadio) Load() error {
+	radio.artistslist = make(chan *LastFmArtist)
+	go getLastFmTrack(radio.lastfm, radio.lastfmTracks, radio.artistslist)
+	err := radio.loadSimilar()
+	if err == nil {
+		go radio.Run()
+	}
+	return err
+}
+
+func (radio *SimilarRadio) loadSimilar() error {
+	radio.page = radio.page + 1
+	params := lastfm.P{"artist": radio.bandName, "limit": 50, "page": radio.page}
+	artists, err := radio.lastfm.Artist.GetSimilar(params)
+	if err == nil {
+		if len(artists.Similars) < 1 {
+			return errors.New("No artists found!")
+		}
+		for _, artist := range artists.Similars {
+			lastFmArtist := &LastFmArtist{
+				Name:  artist.Name,
+				Image: artist.Images[2].Url,
+			}
+			radio.artists = append(radio.artists, lastFmArtist)
+		}
+	}
+	return err
+}
+
+func (radio *SimilarRadio) Run() {
+	for {
+		var next *LastFmArtist
+		if len(radio.artists) > 0 {
+			next, radio.artists = getRandomArtist(radio.artists)
+			radio.artistslist <- next
+			if len(radio.artists) <= 49 {
+				go radio.loadSimilar()
+			}
+		}
+	}
+}

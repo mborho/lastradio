@@ -11,7 +11,7 @@ Rectangle {
     signal startRadio(string name, string label, string username)
     onStartRadio: {
         stack.push(playerView)
-        if(radioName !== label) {
+        if(radioName !== label || name === "similar") {
             player.stop()
             started = true
             radioName = label
@@ -41,6 +41,10 @@ Rectangle {
         ListElement {
             name: "topartists"
             label: "Top Artists"
+        }
+        ListElement {
+            name: "similar"
+            label: "Similar Artists"
         }
     }
 
@@ -163,6 +167,7 @@ Rectangle {
             width: parent.width
             height: 30
             Text {
+                id: radioLabel
                 text: label
                 font.bold: false
                 font.pointSize: 17
@@ -171,8 +176,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    radioListView.currentIndex = index
-                    startView.startRadio(name, label, radioListView.username)
+                    if(name !== "similar") {
+                        radioListView.currentIndex = index
+                        startView.startRadio(name, label, radioListView.username)
+                    }
                 }
             }
             Image {
@@ -181,6 +188,51 @@ Rectangle {
                 height: 26
                 anchors.right: parent.right
                 visible: (started && radioListView.currentIndex === index)
+            }
+            Rectangle {
+                id: bandChoice
+                visible: (name === "similar")
+                height: childrenRect.height
+                color: "transparent"
+                anchors {
+                    top: radioLabel.bottom
+                    right:parent.right
+                    left:parent.left
+                }
+                Row {
+                    height: 50
+                    width: parent.width
+                    Text {
+                        id: bandInputLabel
+                        width: parent.width/7
+                        text: "to "
+                        font.pointSize: 12
+                    }
+                    TextField {
+                        id: bandUserInput
+                        width: parent.width/2
+                        anchors.verticalCenter: bandInputLabel.verticalCenter
+                        placeholderText: "artist name"
+                        style: TextFieldStyle {
+                            background: Rectangle {
+                                color: "#FFFFFF"
+                                border.color: "#333"
+                                border.width: 1
+                                radius: 5
+                            }
+                        }
+                    }
+                    Button {
+                        id: relatedsStart
+                        width: parent.width/5
+                        anchors.verticalCenter: bandInputLabel.verticalCenter
+                        text: "Start"
+                        onClicked: {
+                            radioListView.currentIndex = index
+                            startView.startRadio(name, label, bandUserInput.text)
+                        }
+                    }
+                }
             }
         }
     }
