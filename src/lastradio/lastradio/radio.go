@@ -255,7 +255,7 @@ func (radio *SimilarRadio) Load() error {
 
 func (radio *SimilarRadio) loadSimilar() error {
 	radio.page = radio.page + 1
-        params := lastfm.P{"artist": radio.bandName, "autocorrect": 1, "limit": 50, "page": radio.page}
+	params := lastfm.P{"artist": radio.bandName, "autocorrect": 1, "limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.Artist.GetSimilar(params)
 	if err == nil {
 		if len(artists.Similars) < 1 {
@@ -280,6 +280,66 @@ func (radio *SimilarRadio) Run() {
 			radio.artistslist <- next
 			if len(radio.artists) <= 49 {
 				go radio.loadSimilar()
+			}
+		}
+	}
+}
+
+type TagTracksRadio struct {
+	spotify      *spotify.Session
+	lastfm       *lastfm.Api
+	tracks       []*LastFmTrack
+	lastfmTracks chan *LastFmTrack
+	page         int
+	lastFmUser   *LastFmUser
+	tagName      string
+}
+
+func (radio *TagTracksRadio) Load() error {
+	err := radio.loadTagTracks()
+	if err == nil {
+		go radio.Run()
+	}
+	return err
+}
+
+func (radio *TagTracksRadio) loadTagTracks() error {
+	radio.page = radio.page + 1
+	params := lastfm.P{"tag": radio.tagName, "limit": 50, "page": radio.page}
+	tracks, err := radio.lastfm.Tag.GetTopTracks(params)
+	if err == nil {
+		if tracks.Total < 1 {
+			return errors.New("No tracks found!")
+		}
+		for _, track := range tracks.Tracks {
+			lastFmArtist := &LastFmArtist{
+				Name: track.Artist.Name,
+			}
+			// get image
+			image := ""
+			imgLen := len(track.Images)
+			if imgLen > 0 {
+				image = track.Images[imgLen-1].Url
+			}
+			lastFmTrack := &LastFmTrack{
+				Artist: lastFmArtist,
+				Name:   track.Name,
+				Image:  image,
+			}
+			radio.tracks = append(radio.tracks, lastFmTrack)
+		}
+	}
+	return err
+}
+
+func (radio *TagTracksRadio) Run() {
+	for {
+		if len(radio.tracks) > 0 {
+			var next *LastFmTrack
+			next, radio.tracks = getRandomTrack(radio.tracks)
+			radio.lastfmTracks <- next
+			if len(radio.tracks) <= 49 {
+				go radio.loadTagTracks()
 			}
 		}
 	}

@@ -11,7 +11,7 @@ Rectangle {
     signal startRadio(string name, string label, string username)
     onStartRadio: {
         stack.push(playerView)
-        if(radioName !== label || name === "similar") {
+        if(radioName !== label || name === "similar" || name === "tag") {
             player.stop()
             started = true
             radioName = label
@@ -44,7 +44,11 @@ Rectangle {
         }
         ListElement {
             name: "similar"
-            label: "Similar Artists"
+            label: "Similar"
+        }
+        ListElement {
+            name: "tag"
+            label: "Tag Radio"
         }
     }
 
@@ -104,14 +108,13 @@ Rectangle {
             bottom: parent.bottom
         }
 
-        anchors.margins: 40
+        anchors.margins: 20
         model: radioList
         property string username: ""
         header: Item {
             id: radioListHeader
             width: parent.width
             height: childrenRect.height
-
             Text {
                 id: listHeaderText
                 text: "Choose your station"
@@ -119,100 +122,54 @@ Rectangle {
                 font.pointSize: 17
                 //color: "#FFF"
             }
-            /*Rectangle {
-                id: userChoice
-                height: childrenRect.height
-                color: "transparent"
-                anchors {
-                    top: listHeaderText.bottom
-                    right:parent.right
-                    left:parent.left
-                }
-                Row {
-                    height: 50
-                    anchors {
-                        right: parent.right
-                        left: parent.left
-                    }
-                    Text {
-                        id: userInputLabel
-                        text: "for "
-                        //width: parent.width/2
-                        font.pointSize: 14
-                        //color: "#FFF"
-                    }
-                    TextField {
-                        id: lastfmUserInput
-                        width: parent.width/2
-                        anchors.verticalCenter: userInputLabel.verticalCenter
-                        placeholderText: "you"
-                        onEditingFinished: {
-                            radioListView.username = text.trim()
-                        }
-
-                        style: TextFieldStyle {
-                            background: Rectangle {
-                                color: "#FFFFFF"
-                                border.color: "#333"
-                                border.width: 1
-                                radius: 5
-                            }
-                        }
-                    }
-                }
-            }*/
         }
 
         delegate: Item {
-            width: parent.width
-            height: 30
-            Text {
-                id: radioLabel
-                text: label
-                font.bold: false
-                font.pointSize: 17
-                //color: "#FFF"
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    if(name !== "similar") {
-                        radioListView.currentIndex = index
-                        startView.startRadio(name, label, radioListView.username)
-                    }
-                }
-            }
-            Image {
-                source: "png/online.png"
-                width: 26
-                height: 26
-                anchors.right: parent.right
-                visible: (started && radioListView.currentIndex === index)
-            }
+            width: parent.width            
+            height: 45
+            property bool active: (started && radioListView.currentIndex === index)
             Rectangle {
-                id: bandChoice
-                visible: (name === "similar")
-                height: childrenRect.height
-                color: "transparent"
                 anchors {
-                    top: radioLabel.bottom
-                    right:parent.right
-                    left:parent.left
+                    fill: parent
+                    topMargin:3
+                    bottomMargin:3
                 }
-                Row {
-                    height: 50
-                    width: parent.width
+                color: (active) ? "#E1E1E1" : "transparent"
+                border.color:  (active) ? "#0D3D08": "#BBBBBB"
+                radius: 6
+                Rectangle {
+                    anchors {
+                        fill: parent
+                        leftMargin: 10
+                        rightMargin: 10
+                    }
+                    color: "transparent"
                     Text {
-                        id: bandInputLabel
-                        width: parent.width/7
-                        text: "to "
-                        font.pointSize: 12
+                        id: radioLabel
+                        text: label + ((name === "similar") ?  " to" : "")
+                        font.bold: false
+                        font.pointSize: 17
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(name !== "similar" && name !== "tag") {
+                                radioListView.currentIndex = index
+                                startView.startRadio(name, label, radioListView.username)
+                            }
+                        }
                     }
                     TextField {
-                        id: bandUserInput
+                        id: radioTermInput
+                        visible: (name === "similar" || name == "tag")
                         width: parent.width/2
-                        anchors.verticalCenter: bandInputLabel.verticalCenter
-                        placeholderText: "artist name"
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: extraStart.left
+                            rightMargin: 10
+                        }
+                        placeholderText: (name === "similar") ? "artist name" : "tag name"
                         style: TextFieldStyle {
                             background: Rectangle {
                                 color: "#FFFFFF"
@@ -223,13 +180,18 @@ Rectangle {
                         }
                     }
                     Button {
-                        id: relatedsStart
-                        width: parent.width/5
-                        anchors.verticalCenter: bandInputLabel.verticalCenter
+                        id: extraStart
+                        visible: (name === "similar" || name == "tag")
+                        width: parent.width/7
+                        anchors {
+                            right: parent.right
+                            rightMargin: 0
+                            verticalCenter: parent.verticalCenter
+                        }
                         text: "Start"
                         onClicked: {
                             radioListView.currentIndex = index
-                            startView.startRadio(name, label, bandUserInput.text)
+                            startView.startRadio(name, label, radioTermInput.text)
                         }
                     }
                 }

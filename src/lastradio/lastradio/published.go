@@ -149,6 +149,14 @@ func (p *Player) setRadio(mode string, username string) error {
 			lastFmUser:   p.LastFmUser,
 			bandName:     username,
 		}
+	case "tag":
+		p.Radio = &TagTracksRadio{
+			spotify:      p.Spotify,
+			lastfm:       p.Lastfm,
+			lastfmTracks: p.lastfmTracks,
+			lastFmUser:   p.LastFmUser,
+			tagName:      username,
+		}
 	}
 	err := p.Radio.Load()
 	return err
