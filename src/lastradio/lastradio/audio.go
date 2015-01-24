@@ -1,7 +1,6 @@
 package lastradio
 
 import (
-	"log"
 	"sync"
 
 	"code.google.com/p/portaudio-go/portaudio"
@@ -188,25 +187,4 @@ func (s *portAudioStream) Stream(buffer *[]int16, channels int, sampleRate int) 
 // Write pushes the data in the buffer through to PortAudio.
 func (s *portAudioStream) Write() error {
 	return s.stream.Write()
-}
-
-func playSpotifyTrack(session *spotify.Session, uri string) {
-	log.Print("playing ", uri)
-	// Parse the track
-	link, err := session.ParseLink(uri)
-	if err != nil {
-		log.Fatal(err)
-	}
-	track, err := link.Track()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Load the track and play it
-	track.Wait()
-	player := session.Player()
-	if err := player.Load(track); err != nil {
-		log.Fatal(err)
-	}
-	player.Play()
 }

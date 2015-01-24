@@ -20,6 +20,7 @@ type Player struct {
 	Lastfm       *lastfm.Api
 	LastFmUser   *LastFmUser
 	control      chan string
+	started      chan *LastFmTrack
 	lastfmTracks chan *LastFmTrack
 	playQueue    chan *LastFmTrack
 	spotifyQueue chan *LastFmTrack
@@ -158,6 +159,7 @@ func (p *Player) setRadio(mode string, username string) error {
 			tagName:      username,
 		}
 	}
+	p.started = make(chan *LastFmTrack)
 	err := p.Radio.Load()
 	return err
 }
@@ -184,6 +186,8 @@ func (p *Player) Controller() {
 				log.Print("EndOfTrack threshold not reached")
 			}
 			endTrackTime = time.Now()
+		case track := <-p.started:
+			p.Public.SetData(track)
 		case err := <-streamingErrors:
 			log.Print("SIGNAL: streaming error")
 			log.Print(err)
@@ -194,10 +198,31 @@ func (p *Player) Controller() {
 }
 
 func (p *Player) startNextTrack() {
-	track := <-p.playQueue
-	p.Public.SetData(track)
-	log.Print("Starting Track: ", track.Artist.Name, track.Name)
-	go playSpotifyTrack(p.Spotify, track.SpotifyLink)
+	go p.playSpotifyTrack()
+}
+
+func (p *Player) playSpotifyTrack() { //nextTrack *LastFmTrack, started chan *LastFmTrack) {
+	// Parse the track
+	nextTrack := <-p.playQueue
+	log.Print("Loading Track: ", nextTrack.Artist.Name, nextTrack.Name)
+	link, err := p.Spotify.ParseLink(nextTrack.SpotifyLink)
+	if err != nil {
+		log.Fatal(err)
+	}
+	track, err := link.Track()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Load the track and play it
+	track.Wait()
+	player := p.Spotify.Player()
+	if err := player.Load(track); err != nil {
+		log.Fatal(err)
+	}
+	player.Seek(1000000)
+	player.Play()
+	p.started <- nextTrack
 }
 
 func (p *Player) Pause() {
