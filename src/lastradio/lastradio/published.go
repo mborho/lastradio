@@ -1,12 +1,11 @@
 package lastradio
 
 import (
-	"log"
-	"time"
-
 	spotify "github.com/op/go-libspotify/spotify"
 	"github.com/shkh/lastfm-go/lastfm"
 	"gopkg.in/qml.v1"
+	"log"
+	"time"
 )
 
 type Player struct {
@@ -20,7 +19,6 @@ type Player struct {
 	Lastfm       *lastfm.Api
 	LastFmUser   *LastFmUser
 	control      chan string
-	started      chan *LastFmTrack
 	lastfmTracks chan *LastFmTrack
 	playQueue    chan *LastFmTrack
 	spotifyQueue chan *LastFmTrack
@@ -100,6 +98,7 @@ func (p *Player) LoadRadio(name string, username string) error {
 	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, p.control)
 	go p.Controller()
 	err := p.setRadio(name, username)
+
 	if err != nil {
 		log.Print(err)
 	}
@@ -159,12 +158,12 @@ func (p *Player) setRadio(mode string, username string) error {
 			tagName:      username,
 		}
 	}
-	p.started = make(chan *LastFmTrack)
 	err := p.Radio.Load()
 	return err
 }
 
 func (p *Player) Controller() {
+	started := make(chan *LastFmTrack)
 	endTrackTime := time.Now()
 	endOfTrack := p.Spotify.EndOfTrackUpdates()
 	streamingErrors := p.Spotify.StreamingErrors()
@@ -174,19 +173,19 @@ func (p *Player) Controller() {
 		case command := <-p.control:
 			log.Print("CONTROL: ", command)
 			if command == "next" {
-				p.startNextTrack()
+				p.startNextTrack(started)
 			}
 		case <-endOfTrack:
 			log.Print("SIGNAL: endOfTrack")
 			duration := time.Since(endTrackTime)
 			if duration.Seconds() > 5 {
 				// handle multiple endOfTrack signals with a threshold of 5 secs
-				p.startNextTrack()
+				p.startNextTrack(started)
 			} else {
 				log.Print("EndOfTrack threshold not reached")
 			}
 			endTrackTime = time.Now()
-		case track := <-p.started:
+		case track := <-started:
 			p.Public.SetData(track)
 		case err := <-streamingErrors:
 			log.Print("SIGNAL: streaming error")
@@ -197,11 +196,11 @@ func (p *Player) Controller() {
 	}
 }
 
-func (p *Player) startNextTrack() {
-	go p.playSpotifyTrack()
+func (p *Player) startNextTrack(started chan *LastFmTrack) {
+	go p.playSpotifyTrack(started)
 }
 
-func (p *Player) playSpotifyTrack() { //nextTrack *LastFmTrack, started chan *LastFmTrack) {
+func (p *Player) playSpotifyTrack(started chan *LastFmTrack) { //nextTrack *LastFmTrack, started chan *LastFmTrack) {
 	// Parse the track
 	nextTrack := <-p.playQueue
 	log.Print("Loading Track: ", nextTrack.Artist.Name, nextTrack.Name)
@@ -222,7 +221,7 @@ func (p *Player) playSpotifyTrack() { //nextTrack *LastFmTrack, started chan *La
 	}
 	player.Seek(1000000)
 	player.Play()
-	p.started <- nextTrack
+	started <- nextTrack
 }
 
 func (p *Player) Pause() {
