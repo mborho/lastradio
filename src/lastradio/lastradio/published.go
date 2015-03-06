@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+var (
+	control chan string
+)
+
+func init() {
+	control = make(chan string)
+}
+
 type Player struct {
 	paused       bool
 	LoggedIn     bool
@@ -18,7 +26,6 @@ type Player struct {
 	Spotify      *spotify.Session
 	Lastfm       *lastfm.Api
 	LastFmUser   *LastFmUser
-	control      chan string
 	lastfmTracks chan *LastFmTrack
 	playQueue    chan *LastFmTrack
 	spotifyQueue chan *LastFmTrack
@@ -89,13 +96,12 @@ func (p *Player) Logout() {
 }
 
 func (p *Player) LoadRadio(name string, username string) error {
-	p.control = make(chan string)
 	p.spotifyQueue = make(chan *LastFmTrack, 3)
 	p.playQueue = make(chan *LastFmTrack, 3)
 	p.lastfmTracks = make(chan *LastFmTrack, 3)
 
 	go getTrackInfo(p.Lastfm, p.LastFmUser.Username, p.lastfmTracks, p.spotifyQueue)
-	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, p.control)
+	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, control)
 	go p.Controller()
 	err := p.setRadio(name, username)
 
@@ -170,7 +176,7 @@ func (p *Player) Controller() {
 	//logMessages := p.Spotify.LogMessages()
 	for {
 		select {
-		case command := <-p.control:
+		case command := <-control:
 			log.Print("CONTROL: ", command)
 			if command == "next" {
 				p.startNextTrack(started)
@@ -244,7 +250,7 @@ func (p *Player) Play() {
 		return
 	}
 	go func() {
-		p.control <- "next"
+		control <- "next"
 	}()
 }
 
