@@ -29,10 +29,11 @@ func (radio *RecommendedRadio) Load() error {
 	radio.artistslist = make(chan *LastFmArtist)
 	go getLastFmTrack(radio.lastfm, radio.lastfmTracks, radio.artistslist)
 	err := radio.loadArtists()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *RecommendedRadio) loadArtists() error {
@@ -41,18 +42,18 @@ func (radio *RecommendedRadio) loadArtists() error {
 	radio.page = radio.page + 1
 	var params = lastfm.P{"limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.User.GetRecommendedArtists(params)
-	if err == nil {
-		if artists.Total < 1 {
-			return errors.New("No artists found!")
+	if err != nil {
+		return err
+	}
+	if artists.Total < 1 {
+		return errors.New("No artists found!")
+	}
+	for _, artist := range artists.Artists {
+		lastFmArtist := &LastFmArtist{
+			Name:  artist.Name,
+			Image: artist.Images[2].Url,
 		}
-		for _, artist := range artists.Artists {
-			lastFmArtist := &LastFmArtist{
-				Name:  artist.Name,
-				Image: artist.Images[2].Url,
-			}
-			radio.artists = append(radio.artists, lastFmArtist)
-		}
-
+		radio.artists = append(radio.artists, lastFmArtist)
 	}
 	return err
 }
@@ -88,10 +89,11 @@ func (radio *TopArtistsRadio) Load() error {
 	radio.artistslist = make(chan *LastFmArtist)
 	go getLastFmTrack(radio.lastfm, radio.lastfmTracks, radio.artistslist)
 	err := radio.loadArtists()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *TopArtistsRadio) loadArtists() error {
@@ -100,17 +102,18 @@ func (radio *TopArtistsRadio) loadArtists() error {
 	radio.page = radio.page + 1
 	var params = lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.User.GetTopArtists(params)
-	if err == nil {
-		if artists.Total < 1 {
-			return errors.New("No artists found!")
+	if err != nil {
+		return err
+	}
+	if artists.Total < 1 {
+		return errors.New("No artists found!")
+	}
+	for _, artist := range artists.Artists {
+		lastFmArtist := &LastFmArtist{
+			Name:  artist.Name,
+			Image: artist.Images[2].Url,
 		}
-		for _, artist := range artists.Artists {
-			lastFmArtist := &LastFmArtist{
-				Name:  artist.Name,
-				Image: artist.Images[2].Url,
-			}
-			radio.artists = append(radio.artists, lastFmArtist)
-		}
+		radio.artists = append(radio.artists, lastFmArtist)
 	}
 	return err
 }
@@ -143,10 +146,11 @@ type TopTracksRadio struct {
 
 func (radio *TopTracksRadio) Load() error {
 	err := radio.loadTopTracks()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *TopTracksRadio) loadTopTracks() error {
@@ -155,20 +159,21 @@ func (radio *TopTracksRadio) loadTopTracks() error {
 	radio.page = radio.page + 1
 	params := lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	tracks, err := radio.lastfm.User.GetTopTracks(params)
-	if err == nil {
-		if tracks.Total < 1 {
-			return errors.New("No tracks found!")
+	if err != nil {
+		return err
+	}
+	if tracks.Total < 1 {
+		return errors.New("No tracks found!")
+	}
+	for _, track := range tracks.Tracks {
+		lastFmArtist := &LastFmArtist{
+			Name: track.Artist.Name,
 		}
-		for _, track := range tracks.Tracks {
-			lastFmArtist := &LastFmArtist{
-				Name: track.Artist.Name,
-			}
-			lastFmTrack := &LastFmTrack{
-				Artist: lastFmArtist,
-				Name:   track.Name,
-			}
-			radio.tracks = append(radio.tracks, lastFmTrack)
+		lastFmTrack := &LastFmTrack{
+			Artist: lastFmArtist,
+			Name:   track.Name,
 		}
+		radio.tracks = append(radio.tracks, lastFmTrack)
 	}
 	return err
 }
@@ -201,10 +206,11 @@ type LovedTracksRadio struct {
 
 func (radio *LovedTracksRadio) Load() error {
 	err := radio.loadLovedTracks()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *LovedTracksRadio) loadLovedTracks() error {
@@ -213,27 +219,28 @@ func (radio *LovedTracksRadio) loadLovedTracks() error {
 	radio.page = radio.page + 1
 	params := lastfm.P{"user": radio.currentUsername, "limit": 50, "page": radio.page}
 	tracks, err := radio.lastfm.User.GetLovedTracks(params)
-	if err == nil {
-		if tracks.Total < 1 {
-			return errors.New("No tracks found!")
+	if err != nil {
+		return err
+	}
+	if tracks.Total < 1 {
+		return errors.New("No tracks found!")
+	}
+	for _, track := range tracks.Tracks {
+		lastFmArtist := &LastFmArtist{
+			Name: track.Artist.Name,
 		}
-		for _, track := range tracks.Tracks {
-			lastFmArtist := &LastFmArtist{
-				Name: track.Artist.Name,
-			}
-			// get image
-			image := ""
-			imgLen := len(track.Images)
-			if imgLen > 0 {
-				image = track.Images[imgLen-1].Url
-			}
-			lastFmTrack := &LastFmTrack{
-				Artist: lastFmArtist,
-				Name:   track.Name,
-				Image:  image,
-			}
-			radio.tracks = append(radio.tracks, lastFmTrack)
+		// get image
+		image := ""
+		imgLen := len(track.Images)
+		if imgLen > 0 {
+			image = track.Images[imgLen-1].Url
 		}
+		lastFmTrack := &LastFmTrack{
+			Artist: lastFmArtist,
+			Name:   track.Name,
+			Image:  image,
+		}
+		radio.tracks = append(radio.tracks, lastFmTrack)
 	}
 	return err
 }
@@ -269,10 +276,11 @@ func (radio *SimilarRadio) Load() error {
 	radio.artistslist = make(chan *LastFmArtist)
 	go getLastFmTrack(radio.lastfm, radio.lastfmTracks, radio.artistslist)
 	err := radio.loadSimilar()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *SimilarRadio) loadSimilar() error {
@@ -281,17 +289,18 @@ func (radio *SimilarRadio) loadSimilar() error {
 	radio.page = radio.page + 1
 	params := lastfm.P{"artist": radio.bandName, "autocorrect": 1, "limit": 50, "page": radio.page}
 	artists, err := radio.lastfm.Artist.GetSimilar(params)
-	if err == nil {
-		if len(artists.Similars) < 1 {
-			return errors.New("No artists found!")
+	if err != nil {
+		return err
+	}
+	if len(artists.Similars) < 1 {
+		return errors.New("No artists found!")
+	}
+	for _, artist := range artists.Similars {
+		lastFmArtist := &LastFmArtist{
+			Name:  artist.Name,
+			Image: artist.Images[2].Url,
 		}
-		for _, artist := range artists.Similars {
-			lastFmArtist := &LastFmArtist{
-				Name:  artist.Name,
-				Image: artist.Images[2].Url,
-			}
-			radio.artists = append(radio.artists, lastFmArtist)
-		}
+		radio.artists = append(radio.artists, lastFmArtist)
 	}
 	return err
 }
@@ -324,10 +333,11 @@ type TagTracksRadio struct {
 
 func (radio *TagTracksRadio) Load() error {
 	err := radio.loadTagTracks()
-	if err == nil {
-		go radio.Run()
+	if err != nil {
+		return err
 	}
-	return err
+	go radio.Run()
+	return nil
 }
 
 func (radio *TagTracksRadio) loadTagTracks() error {
@@ -336,27 +346,28 @@ func (radio *TagTracksRadio) loadTagTracks() error {
 	radio.page = radio.page + 1
 	params := lastfm.P{"tag": radio.tagName, "limit": 50, "page": radio.page}
 	tracks, err := radio.lastfm.Tag.GetTopTracks(params)
-	if err == nil {
-		if tracks.Total < 1 {
-			return errors.New("No tracks found!")
+	if err != nil {
+		return err
+	}
+	if tracks.Total < 1 {
+		return errors.New("No tracks found!")
+	}
+	for _, track := range tracks.Tracks {
+		lastFmArtist := &LastFmArtist{
+			Name: track.Artist.Name,
 		}
-		for _, track := range tracks.Tracks {
-			lastFmArtist := &LastFmArtist{
-				Name: track.Artist.Name,
-			}
-			// get image
-			image := ""
-			imgLen := len(track.Images)
-			if imgLen > 0 {
-				image = track.Images[imgLen-1].Url
-			}
-			lastFmTrack := &LastFmTrack{
-				Artist: lastFmArtist,
-				Name:   track.Name,
-				Image:  image,
-			}
-			radio.tracks = append(radio.tracks, lastFmTrack)
+		// get image
+		image := ""
+		imgLen := len(track.Images)
+		if imgLen > 0 {
+			image = track.Images[imgLen-1].Url
 		}
+		lastFmTrack := &LastFmTrack{
+			Artist: lastFmArtist,
+			Name:   track.Name,
+			Image:  image,
+		}
+		radio.tracks = append(radio.tracks, lastFmTrack)
 	}
 	return err
 }

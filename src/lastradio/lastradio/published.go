@@ -103,8 +103,8 @@ func (p *Player) LoadRadio(name string, username string) error {
 	go getTrackInfo(p.Lastfm, p.LastFmUser.Username, p.lastfmTracks, p.spotifyQueue)
 	go getSpotifyData(p.Spotify, p.spotifyQueue, p.playQueue, control)
 	go p.Controller()
-	err := p.setRadio(name, username)
 
+	err := p.setRadio(name, username)
 	if err != nil {
 		log.Print(err)
 	}
