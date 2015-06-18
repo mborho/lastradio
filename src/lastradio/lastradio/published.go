@@ -215,23 +215,18 @@ func (p *Player) playSpotifyTrack(started chan *LastFmTrack) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print("---> Get Track")
+
 	track, err := link.Track()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	// Load the track and play it
 	track.Wait()
-	log.Print("---> Get Player")
+
 	player := p.Spotify.Player()
-	log.Print("---> Load Track")
 	if err := player.Load(track); err != nil {
 		log.Fatal(err)
 	}
-	log.Print("---> Seek")
-	player.Seek(1000000)
-	log.Print("---> Play")
 	player.Play()
 	started <- nextTrack
 }

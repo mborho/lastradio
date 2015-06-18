@@ -26,7 +26,6 @@ type LastFmTrack struct {
 }
 
 func getLastFmTrack(api *lastfm.Api, trackList chan *LastFmTrack, artists chan *LastFmArtist) {
-	log.Print("getLastFmTrack")
 	for artist := range artists {
 		tracks, err := api.Artist.GetTopTracks(lastfm.P{"artist": artist.Name, "limit": 5})
 		if err != nil {
@@ -49,7 +48,6 @@ func getNextArtist(recommended *lastfm.UserGetRecommendedArtists) string {
 }
 
 func getTrackInfo(api *lastfm.Api, username string, trackList chan *LastFmTrack, spotifyQueue chan *LastFmTrack) {
-	log.Print("getTrackInfo")
 	for track := range trackList {
 		params := lastfm.P{"username": username, "artist": track.Artist.Name, "track": track.Name}
 		trackInfo, err := api.Track.GetInfo(params)
@@ -70,10 +68,9 @@ func getTrackInfo(api *lastfm.Api, username string, trackList chan *LastFmTrack,
 }
 
 func getSpotifyData(session *spotify.Session, tracklist, playlist chan *LastFmTrack, control chan string) error {
-	log.Print("getSpotifyData")
 	for track := range tracklist {
 		term := track.Artist.Name + " " + track.Name
-		log.Print("Received: ", term)
+		log.Print("*** Received: ", term)
 		query := prepareSpotifyTerm(term)
 		if term != query {
 			log.Print("  Prepared: " + query)
@@ -82,7 +79,6 @@ func getSpotifyData(session *spotify.Session, tracklist, playlist chan *LastFmTr
 		var sOpts = &spotify.SearchOptions{
 			Tracks: spec,
 		}
-
 		search, err := session.Search(query, sOpts)
 		if err != nil {
 			return err
@@ -99,6 +95,9 @@ func getSpotifyData(session *spotify.Session, tracklist, playlist chan *LastFmTr
 				playlist <- track
 				break
 			}
+		}
+		if len(playlist) > 2 {
+			time.Sleep(2 * time.Second)
 		}
 	}
 	return nil
