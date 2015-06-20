@@ -29,13 +29,15 @@ func getLastFmTrack(api *lastfm.Api, trackList chan *LastFmTrack, artists chan *
 	log.Print("getLastFmTrack")
 	for artist := range artists {
 		tracks, err := api.Artist.GetTopTracks(lastfm.P{"artist": artist.Name, "limit": 5})
-		if err == nil {
-			index := randInt(len(tracks.Tracks))
-			track := tracks.Tracks[index]
-			trackList <- &LastFmTrack{
-				Artist: artist,
-				Name:   track.Name,
-			}
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		index := randInt(len(tracks.Tracks))
+		track := tracks.Tracks[index]
+		trackList <- &LastFmTrack{
+			Artist: artist,
+			Name:   track.Name,
 		}
 	}
 }
@@ -53,6 +55,7 @@ func getTrackInfo(api *lastfm.Api, username string, trackList chan *LastFmTrack,
 		trackInfo, err := api.Track.GetInfo(params)
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 		if trackInfo.UserLoved == "1" {
 			track.IsLoved = true
