@@ -1,4 +1,4 @@
-lastradio (0.18-0-trusty) trusty; urgency=low
+lastradio (0.18-0-utopic) utopic; urgency=low
 
   * fixed race conditions
 
