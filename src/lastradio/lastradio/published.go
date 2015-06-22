@@ -227,6 +227,7 @@ func (p *Player) playSpotifyTrack(started chan *LastFmTrack) {
 	if err := player.Load(track); err != nil {
 		log.Fatal(err)
 	}
+	player.Seek(1000000)
 	player.Play()
 	started <- nextTrack
 }
