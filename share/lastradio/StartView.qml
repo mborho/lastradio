@@ -34,10 +34,10 @@ Rectangle {
             name: "loved"
             label: "Loved Tracks"
         }
-        ListElement {
+        /*ListElement {
             name: "recommended"
             label: "Recommended Artists"
-        }
+        }*/
         ListElement {
             name: "topartists"
             label: "Top Artists"
