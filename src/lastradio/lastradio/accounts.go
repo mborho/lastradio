@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"code.google.com/p/portaudio-go/portaudio"
+	"github.com/gordonklaus/portaudio"
 	spotify "github.com/op/go-libspotify/spotify"
 	"github.com/shkh/lastfm-go/lastfm"
 )

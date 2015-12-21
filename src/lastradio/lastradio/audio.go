@@ -3,7 +3,7 @@ package lastradio
 import (
 	"sync"
 
-	"code.google.com/p/portaudio-go/portaudio"
+	"github.com/gordonklaus/portaudio"
 	spotify "github.com/op/go-libspotify/spotify"
 )
 
