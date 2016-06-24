@@ -29,7 +29,7 @@ GoProject {
         }    
     }
     Package {
-        name: "code.google.com/p/portaudio-go/portaudio"
+        name: "github.com/gordonklaus/portaudio"
         Files {
             filter: "*.*"
         }

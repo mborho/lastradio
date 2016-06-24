@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 1.2
 
 Rectangle {
     id: playerView
@@ -21,19 +21,21 @@ Rectangle {
 
     Rectangle {
         id: trackBox
+        width: 400
         height: 360
-        color: "transparent"
-        anchors {
+        color: "#000"
+        /*anchors {
             right: parent.right
             left: parent.left
             top: parent.top
             bottom: playerActions.top
-        }
+        }*/
         //Column {
         Rectangle {
             id: trackTitle
             color: "transparent"
             height: childrenRect.height
+            z: 1
             anchors {
                 margins: 10
                 bottomMargin: 0
@@ -64,6 +66,7 @@ Rectangle {
             height: childrenRect.height
             visible: track.album
             color: "transparent"
+            z: 1
             anchors {
                 margins: 10
                 top: trackTitle.bottom
@@ -86,6 +89,7 @@ Rectangle {
             height: childrenRect.height
             visible: track.year
             color: "transparent"
+            z: 1
             anchors {
                 margins: 10
                 top: trackAlbum.bottom
@@ -104,12 +108,13 @@ Rectangle {
             source: track.image
             height: trackBox.height
             width: trackBox.width
-            z: -1
+            //z: -1
             opacity: 0.5
         }
         Rectangle {
             height: childrenRect.height
             color: "transparent"
+            z: 1
             anchors {
                 margins: 10
                 bottom: parent.bottom
@@ -204,6 +209,7 @@ Rectangle {
 
     PlayerActions {
         id: playerActions
+        anchors.top: trackBox.bottom
     }
 
 }

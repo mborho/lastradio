@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.1
-import QtQuick.Controls.Styles 1.1
+import QtQuick.Controls 1.2
+import QtQuick.Layouts 1.2
+import QtQuick.Controls.Styles 1.2
 
 Rectangle {
     id: startView
@@ -10,6 +10,7 @@ Rectangle {
 
     signal startRadio(string name, string label, string username)
     onStartRadio: {
+        console.log("######################")
         stack.push(playerView)
         if(radioName !== label || name === "similar" || name === "tag") {
             player.stop()
@@ -61,7 +62,9 @@ Rectangle {
             left: parent.left
             right: parent.right
         }
-
+        Component.onCompleted: {
+            console.log(parent.height)
+        }
         RowLayout {
             anchors.verticalCenter: parent.verticalCenter
             Button {
@@ -96,20 +99,57 @@ Rectangle {
                     player.logout()
                     stack.push(loginView)
                 }
-            }
+            }            
         }
     }
+
+    ListModel {
+        id: contactModel
+        ListElement {
+            name: "Bill Smith"
+            number: "555 3264"
+        }
+        ListElement {
+            name: "John Brown"
+            number: "555 8426"
+        }
+        ListElement {
+            name: "Sam Wise"
+            number: "555 0473"
+        }
+    }
+
+    /*ListView {
+        id: radioListView
+        anchors {
+            top: tools.bottom
+            //left: parent.left
+            //right: parent.right
+        }
+        width: 400
+        height:360
+
+        //width: parent.width
+        //height: main.height
+
+        model: contactModel
+        delegate: Text {
+            text: name + ": " + number
+            height: 50
+        }
+    }*/
     ListView {
         id: radioListView
         anchors {
-            left: parent.left
-            right: parent.right
             top: tools.bottom
-            bottom: parent.bottom
+            //left: parent.left
+            //right: parent.right
+            //bottom: parent.bottom
         }
-
-        anchors.margins: 20
-        model: radioList
+        width: 400
+        height: 360//childrenRect.height
+        //anchors.margins: 20
+        model:    radioList
         property string username: ""
         header: Item {
             id: radioListHeader
@@ -123,7 +163,6 @@ Rectangle {
                 //color: "#FFF"
             }
         }
-
         delegate: Item {
             width: parent.width            
             height: 45

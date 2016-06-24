@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 1.2
 import QtQuick.LocalStorage 2.0
 
 ApplicationWindow {
@@ -11,7 +11,7 @@ ApplicationWindow {
     minimumWidth: 400
     maximumHeight: 400
     maximumWidth: 400
-    color: "#000000"
+    //color: "lightgrey"
     property bool started: false
     property string radioName: ""
     property string currentUsername: ""

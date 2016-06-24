@@ -1,10 +1,14 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.1
-import QtQuick.Controls.Styles 1.1
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 
 Rectangle {
     id: loginView
     color:"lightgrey"
+    /*anchors {
+        fill:parent
+    }*/
+
     property bool loggedIn: player.loggedIn
     onLoggedInChanged: {
         if(!player.loggedIn) {
@@ -45,9 +49,13 @@ Rectangle {
     }
     Column {
         anchors {
-            horizontalCenter: parent.horizontalCenter
+            //horizontalCenter: parent.horizontalCenter
             top: parent.top
             topMargin: 100
+            right: parent.right
+            rightMargin: 30
+            left:parent.left
+            leftMargin: 30
         }
         Text {
             id: loginMessage
@@ -55,7 +63,10 @@ Rectangle {
         }
 
         GroupBox {
-            title: "LastFm-Login"
+            title: "LastFm-Login"            
+            anchors {
+
+            }
             Row {
                 TextField {
                     anchors.rightMargin: 10

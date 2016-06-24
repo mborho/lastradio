@@ -2,14 +2,15 @@ import QtQuick 2.0
 
 Rectangle {
     id: playerActions
+    width: 400
     height: 40
     visible: true
     color: "lightgrey"
-    anchors {
+    /*anchors {
         right: parent.right
         left: parent.left
         bottom: parent.bottom
-    }
+    }*/
     function clickedAnimation(button) {
         clickAnim1.target = button
         clickAnim2.target = button
