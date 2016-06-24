@@ -1,11 +1,17 @@
-lastradio (0.21-1-vivid) vivid; urgency=low
+lastradio (0.22-0-trusty) trusty; urgency=low
+
+  * Updated portaudio package.
+
+ -- Martin Borho <martin@borho.net>  Mon, 21 Dec 2015 00:00:00 +0000
+
+lastradio (0.21-1-trusty) trusty; urgency=low
 
   * fixes in github.com/shkh/lastfm-go for new relaunched last.fm API.
   * deactivated 'Recommended Artist' radio due last.fm API bug.
 
  -- Martin Borho <martin@borho.net>  Fri, 10 Oct 2015 00:00:00 +0000
 
-lastradio (0.20-0-vivid) vivid; urgency=low
+lastradio (0.20-0-trusty) trusty; urgency=low
 
   * jump to start before playing track, to prevent delay between start signal and actual sound
 
