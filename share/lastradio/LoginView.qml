@@ -35,6 +35,7 @@ Rectangle {
     }
 
     Text {
+        visible: !player.loggedIn
         anchors {
             top:parent.top
             topMargin: 30
@@ -48,6 +49,7 @@ Rectangle {
         text: "Please specify your account\ncredentials!"
     }
     Column {
+        visible: !player.loggedIn
         anchors {
             //horizontalCenter: parent.horizontalCenter
             top: parent.top
